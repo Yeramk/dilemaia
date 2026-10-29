@@ -1,149 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f3f3f3">
-<title>Respuesta a los 15 vídeos de Abril</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#f3f3f3;color:#171717}
-body{min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden}
-button{font:inherit;cursor:pointer}.screen{width:100%;min-height:100vh;display:none;align-items:center;justify-content:center;padding:18px}
-.screen.active{display:flex;animation:appear .35s ease}
-.box{width:min(560px,100%);background:#fff;border:1px solid #d6d6d6;border-radius:10px;padding:30px 24px;box-shadow:0 5px 18px rgba(0,0,0,.08)}
-h1{margin:0 0 18px;font-size:clamp(24px,7vw,38px);line-height:1.05;text-align:center}
-h2{margin:0 0 14px;font-size:25px}p{line-height:1.55;margin:10px 0}.tiny{font-size:13px;color:#666}.mono{font-family:"Courier New",monospace}
-.button{width:100%;border:1px solid #222;background:#222;color:#fff;border-radius:7px;padding:14px 18px;margin-top:18px;font-weight:700}
-.button:active{transform:translateY(1px)}
-.fake-progress{height:17px;width:100%;border:1px solid #777;background:#eee;margin:22px 0 8px;overflow:hidden}
-.fake-progress>div{height:100%;width:0;background:#222;transition:width .7s ease}
-.status{min-height:22px;font-family:"Courier New",monospace;font-size:13px}
-.choices{display:grid;gap:10px;margin-top:20px}.choice{border:1px solid #aaa;background:#fafafa;color:#111;padding:13px 14px;border-radius:6px;text-align:left}
-.choice:hover{background:#eee}.choice.correct{border-color:#222;background:#e8e8e8}
-.glitch{font-family:"Courier New",monospace;color:#333}.secret{text-align:center;padding:10px 0 4px;font-size:42px}
-.final-gate{text-align:center}.small-line{margin-top:28px;color:#777;font-size:12px}
-@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:480px){.screen{padding:16px}.box{padding:24px 18px}}
-</style>
+  <meta charset="UTF-8">
+  <title>Calculadora Básica - Tradicional</title>
 </head>
 <body>
+  <h2>Calculadora Básica (Sin IA)</h2>
+  
+  <input type="text" id="pantalla" readonly><br><br>
+  
+  <button onclick="agregar('1')">1</button>
+  <button onclick="agregar('2')">2</button>
+  <button onclick="agregar('3')">3</button>
+  <button onclick="operacion('+')">+</button><br><br>
 
-<script>
-/* =========================================================
-   ✏️ PERSONALIZACIÓN — SOLO TOCA ESTA ZONA
-   ========================================================= */
-const PERSONALIZACION = {
-  nombre: "Mara",
-  titulo: "Respuesta a los 15 vídeos de Abril",
-  subtitulo: "Porque dices responder 15 vídeos de otra manera era demasiado fácil.",
-  mensajeInicial: "He preparado una respuesta. No sé si es exactamente lo que esperabas, pero lo intenté.",
-  pregunta: "¿Quién está leyendo esto?",
-  opciones: [
-    "Una persona subnormal",
-    "Mara",
-    "Una persona que claramente no sabe dónde se está metiendo"
-  ],
-  mensajePuerta: "Vale. Ya está bien de tonterías.",
-  mensajeFinal: "Esto no era la respuesta. Esto era la puerta para soltar los nervios.",
-  textoBotonFinal: "ENTRAR",
+  <button onclick="agregar('4')">4</button>
+  <button onclick="agregar('5')">5</button>
+  <button onclick="agregar('6')">6</button>
+  <button onclick="operacion('-')">-</button><br><br>
 
-  /*
-   * 🔴 PEGA AQUÍ LA URL DE TU WEB DEFINITIVA 2.1.10.
-   * Ejemplo:
-   * webFinal: "https://usuario.github.io/repositorio/"
-   */
-  webFinal: "https://yeramk.github.io/15-razones/"
-};
-/* =========================================================
-   🚫 NO ES NECESARIO TOCAR NADA DEBAJO
-   ========================================================= */
+  <button onclick="agregar('7')">7</button>
+  <button onclick="agregar('8')">8</button>
+  <button onclick="agregar('9')">9</button>
+  <button onclick="operacion('*')">*</button><br><br>
 
-document.addEventListener("DOMContentLoaded",()=>{
-  document.getElementById("mainTitle").textContent=PERSONALIZACION.titulo;
-  document.getElementById("mainSubtitle").textContent=PERSONALIZACION.subtitulo;
-  document.getElementById("initialMessage").textContent=PERSONALIZACION.mensajeInicial;
-  document.getElementById("question").textContent=PERSONALIZACION.pregunta;
-  document.getElementById("finalMessage").textContent=PERSONALIZACION.mensajeFinal;
-  document.getElementById("finalButton").textContent=PERSONALIZACION.textoBotonFinal;
-  document.querySelectorAll(".choice").forEach((el,i)=>{
-    if(PERSONALIZACION.opciones[i])el.textContent=PERSONALIZACION.opciones[i];
-  });
-});
-</script>
+  <button onclick="borrar()">C</button>
+  <button onclick="agregar('0')">0</button>
+  <button onclick="calcular()">=</button>
+  <button onclick="operacion('/')">/</button>
 
-<section class="screen active" id="screen1"><div class="box">
-<h1 id="mainTitle"></h1><p id="mainSubtitle" style="text-align:center"></p><p id="initialMessage"></p>
-<button class="button" onclick="goTo(2)">EMPEZAR</button>
-<p class="tiny" style="text-align:center">Proyecto completamente innecesario. Probablemente.</p>
-</div></section>
+  <script>
+    let num1 = '';
+    let num2 = '';
+    let op = '';
 
-<section class="screen" id="screen2"><div class="box">
-<h2 class="mono">CARGANDO RESPUESTA...</h2>
-<div class="fake-progress"><div id="progressBar"></div></div>
-<div class="status" id="progressStatus">Iniciando...</div>
-<button class="button" id="continueLoading" style="display:none" onclick="goTo(3)">CONTINUAR</button>
-</div></section>
+    function agregar(numero) {
+      document.getElementById('pantalla').value += numero;
+    }
 
-<section class="screen" id="screen3"><div class="box">
-<h2 class="mono">DIAGNÓSTICO COMPLETADO</h2>
-<p>✓ demasiado esfuerzo</p><p>✓ una cantidad preocupante de horas</p><p>✓ cosas que probablemente no necesitabas</p><p>✓ 15 vídeos</p><p>✓ y algo más</p>
-<button class="button" onclick="goTo(4)">VER</button>
-</div></section>
+    function operacion(operador) {
+      num1 = document.getElementById('pantalla').value;
+      op = operador;
+      document.getElementById('pantalla').value = '';
+    }
 
-<section class="screen" id="screen4"><div class="box">
-<h2>Un pequeño problema.</h2><p class="glitch">ERROR 404</p><p>El regalo no está aquí.</p>
-<p class="tiny">Bueno... técnicamente sí. Pero no aquí.</p>
-<button class="button" onclick="goTo(5)">BUSCAR REGALO</button>
-</div></section>
+    function borrar() {
+      document.getElementById('pantalla').value = '';
+      num1 = '';
+      num2 = '';
+      op = '';
+    }
 
-<section class="screen" id="screen5"><div class="box">
-<h2 class="mono">ACCESO RESTRINGIDO</h2><p id="question"></p>
-<div class="choices">
-<button class="choice" onclick="answer(this)">Opción 1</button>
-<button class="choice" onclick="answer(this)">Opción 2</button>
-<button class="choice" onclick="answer(this)">Opción 3</button>
-</div>
-<p id="answerMessage" class="tiny" style="text-align:center;min-height:18px"></p>
-</div></section>
-
-<section class="screen" id="screen6"><div class="box final-gate">
-<div class="secret">♡</div><h2 id="finalMessage"></h2>
-<p>Esta era solamente la puerta.</p><p class="tiny">La respuesta de verdad está en otro sitio.</p>
-<button class="button" id="finalButton" onclick="enterRealWeb"></button>
-<p class="small-line">Si este botón no funciona, probablemente no has puesto todavía la URL.</p>
-</div></section>
-
-<script>
-function goTo(n){
- document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
- const next=document.getElementById("screen"+n);if(next)next.classList.add("active");
- if(n===2)startLoading();
-}
-function startLoading(){
- const bar=document.getElementById("progressBar"),status=document.getElementById("progressStatus"),button=document.getElementById("continueLoading");
- const stages=[[17,"Comprobando conexión..."],[42,"Analizando vídeos..."],[68,"Calculando nivel de esfuerzo..."],[89,"Preparando respuesta..."],[99,"Casi terminado..."],[99,"99%"],[100,"Resultado: sí. Por desgracia."]];
- let i=0;
- const tick=()=>{
-   const [pct,text]=stages[i];bar.style.width=pct+"%";status.textContent=text;i++;
-   if(i<stages.length)setTimeout(tick,i===stages.length-2?1200:650);
-   else setTimeout(()=>button.style.display="block",650);
- };
- tick();
-}
-function answer(button){
- document.querySelectorAll(".choice").forEach(b=>b.classList.remove("correct"));
- button.classList.add("correct");
- document.getElementById("answerMessage").textContent="Identidad confirmada. Era bastante evidente.";
- setTimeout(()=>goTo(6),850);
-}
-function enterRealWeb(){
- const url=PERSONALIZACION.webFinal.trim();
- if(!url||url==="PEGA_AQUI_LA_URL_DE_LA_WEB_2_1_10"){
-   alert("Todavía falta poner la URL de la web definitiva 2.1.10 en la zona de PERSONALIZACIÓN del código.");
-   return;
- }
- window.location.href=url;
-}
-</script>
+    function calcular() {
+      num2 = document.getElementById('pantalla').value;
+      let resultado = 0;
+      if (op === '+') resultado = parseFloat(num1) + parseFloat(num2);
+      if (op === '-') resultado = parseFloat(num1) - parseFloat(num2);
+      if (op === '*') resultado = parseFloat(num1) * parseFloat(num2);
+      if (op === '/') resultado = parseFloat(num1) / parseFloat(num2);
+      document.getElementById('pantalla').value = resultado;
+    }
+  </script>
 </body>
 </html>
